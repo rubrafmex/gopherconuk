@@ -24,7 +24,7 @@ func TestHandlers_Handler(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		test := test
+		test := test // This is an intentional shadowing. Needed when executing tests in parallel.
 		t.Run(test.name, func(t *testing.T) {
 			h := NewHandlers(nil)
 			h.Home(test.out, test.in)
