@@ -1,4 +1,4 @@
 ### Local connection
-GET https://local.localhost:8080/
+GET http://localhost:8080/
 
 ###

@@ -18,15 +18,17 @@ func (h *Handlers) Home(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(message))
 }
 
-func (h *Handlers) Logger(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) Logger(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		startTime := time.Now()
 		defer h.logger.Printf("request processed in %s\n", time.Now().Sub(startTime))
-		next(w, r)
-	}
+		next.ServeHTTP(w, r)
+	})
 }
+
 func (h *Handlers) SetupRoutes(mux *http.ServeMux) {
-	mux.HandleFunc("/", h.Logger(h.Home))
+	finalHandler := http.HandlerFunc(h.Home)
+	mux.Handle("/", h.Logger(finalHandler))
 }
 
 func NewHandlers(logger *log.Logger) *Handlers {
